@@ -6,7 +6,7 @@ class TicketType:
 
 def validate_ticket_number(ticket_number, type_of_ticket):
     if type_of_ticket == TicketType.CLASSIC:
-        if len(ticket_number) != 10 or ticket_number[0] not in ['1', '3', '4', '6', '8']:
+        if len(ticket_number) != 10 or ticket_number[0] not in ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]:
             return False
     elif type_of_ticket == TicketType.POST_PARKING:
         if len(ticket_number) != 26:
@@ -37,12 +37,28 @@ st.title("Calculateur de numéro de télépaiement et clé de e-paiement pour le
 st.markdown("Vous avez perdu la deuxième partie de votre contravention OU vous ne possédez que le numéro de l'avis de contravention ET vous souhaitez payer en ligne ? <br> " \
             "Ce site est fait pour vous !", unsafe_allow_html=True)
 
+st.image("static/notice-paiement-perdue.png", caption="Illustration de CléAmende")
+
+with st.sidebar:
+    st.markdown("# CléAmende")
+    st.image("static/notice-paiement-perdue.png", caption="Illustration de CléAmende")
+    st.markdown("## À propos de ce site")
+    st.markdown("Ce site permet de calculer le numéro de télépaiement et la clé de e-paiement pour les contraventions classiques et les forfaits post stationnement.")
+    st.markdown("## Si vous êtes là, c'est que vous avez perdu la deuxième partie de votre contravention OU vous ne possédez que le numéro de télépaiement de votre contravention.")
+    st.image("static/notice-de-paiement.jpg", caption="Exemple de notice de paiement")
+    st.markdown("## À propos")
+    st.markdown("Ce site a été créé par [Thomas](https://github.com/tcaruchet), à Nice 🇫🇷, sous le soleil et les cigales qui chantent. 🌞🐞")
+    st.markdown("Le code source est disponible sur [GitHub](https://github.com/tcaruchet/CleAmende).")
+
+
+
 type_of_ticket = st.selectbox("Type de contravention", [TicketType.CLASSIC, TicketType.POST_PARKING])
 ticket_number = st.text_input("Numéro de contravention", "", help="Le numéro de contravention est composé de 10 chiffres pour les contraventions classiques et de 26 caractères pour les forfaits post stationnement.")
 
 if st.button("Calculer le numéro de e-paiement la clé de télépaiement"):
     payment_number, key = calculate_payment_number_and_key(ticket_number, type_of_ticket)
     if payment_number and key:
+        st.balloons()
         st.success("Calcul réussi !")
         st.markdown(f"### Numéro de télépaiement")
         st.markdown(f"<h2 style='text-align: center;'>{payment_number}</h2>", unsafe_allow_html=True)
@@ -51,11 +67,35 @@ if st.button("Calculer le numéro de e-paiement la clé de télépaiement"):
         st.markdown("<p style='text-align: center;'><a href='https://www.amendes.gouv.fr/tai' target='_blank'>Payer l'amende - https://www.amendes.gouv.fr/tai</a></p>", unsafe_allow_html=True)
         st.markdown("<p style='text-align: center; color: gray; font-size: 12px;'>Attention : www.amendes.gouv.fr est le seul site gouvernemental pour payer votre amende en ligne. Faites attention aux arnaques.</p>", unsafe_allow_html=True)
 
-        
+st.markdown("<br> <br> <br> <br>", unsafe_allow_html=True)
+st.markdown("<hr>", unsafe_allow_html=True)        
+with st.expander("Explications détaillées"):
+    st.markdown("""
+    ## Qu'est-ce que la clé de télépaiement ?
+    La clé de télépaiement est un code à 2 chiffres qui permet de vérifier que le numéro de télépaiement est valide. <br>
+    Elle est calculée à partir du numéro de télépaiement. <br>
+    La clé de télépaiement est utilisée pour les contraventions classiques et les forfaits post stationnement.
+    ## Qu'est-ce que le numéro de télépaiement ?
+    Le numéro de télépaiement est un code à 13 chiffres qui permet de payer une contravention en ligne. <br>
+    Il est composé de 3 chiffres, du numéro de contravention et d'un chiffre. <br>
+    Le numéro de télépaiement est utilisé pour les contraventions classiques et les forfaits post stationnement.
+    """, unsafe_allow_html=True)
+    tab1, tab2, tab3 = st.tabs(["Où trouver le numéro de contravention ?", "C'est quoi la notice de paiement ?", "Où copier le numéro de télépaiement et la clé générée ?"])
 
+    with tab1:
+        st.header("Où trouver le numéro de contravention ?")
+        st.image("static/avis-de-contravention.jpg", caption="Exemple de contravention classique")
 
-# add a footer with a link to the github repo
-st.markdown("<br> <br> <br> <br> <br> <br> <br> <br>", unsafe_allow_html=True)
+    with tab2:
+        st.header("C'est quoi la notice de paiement ?")
+        st.image("static/notice-de-paiement.jpg", caption="Exemple de notice de paiement, le document que vous avez égaré")
+
+    with tab3:
+        st.header("Où copier le numéro de télépaiement et la clé générée ?")
+        st.image("static/antai_logo.png", width=200)
+        st.markdown("Se rendre sur le site [https://www.amendes.gouv.fr/tai](https://www.amendes.gouv.fr/tai) et remplir le formulaire comme ci-dessous :")
+        st.image("static/antai_form.png", caption="Exemple de formulaire de paiement en ligne")
+
 st.markdown("<hr>", unsafe_allow_html=True)
 st.markdown("<p style='text-align: center;'><a href='https://github.com/tcaruchet/CleAmende'>Github</a></p>", unsafe_allow_html=True)
 keywords = ["contravention", "amende", "télépaiement", "e-paiement", "CléAmende", "paiement en ligne", "contravention française", "forfait post stationnement", "FPS", 

@@ -1,6 +1,10 @@
 # CléAmende
 
+![Illustration de l'application CléAmende](static/notice-paiement-perdue.png "Notice de paiement perdue - Illustration de l'application CléAmende")
+
 CléAmende est une application web développée en Python avec le framework Streamlit. Elle permet de calculer le numéro de télépaiement et la clé de e-paiement à partir d'un numéro de contravention français.
+
+
 
 ## Fonctionnalités
 

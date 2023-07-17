@@ -1,5 +1,10 @@
 import streamlit as st
 
+st.set_page_config(
+    page_title="CléAmende - Retouvez votre numéro de télépaiement et votre clé de e-paiement pour payer votre contravention en ligne",
+    page_icon="👮‍♂️"
+)
+
 class TicketType:
     CLASSIC = "Contravention classique"
     POST_PARKING = "Forfait post stationnement"

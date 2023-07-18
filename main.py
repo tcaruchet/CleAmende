@@ -31,8 +31,10 @@ def calculate_payment_number_and_key(ticket_number, type_of_ticket):
         return payment_number, key
 
     elif type_of_ticket == TicketType.POST_PARKING:
-        # Ici, ajouter le calcul pour le Forfait post stationnement
-        pass
+        key = str(int(ticket_number) % 97)
+        if len(key) == 1:
+            key = '0' + key
+        return ticket_number, key
 
     else:
         st.error("Type de contravention non reconnu.")

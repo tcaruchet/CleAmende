@@ -10,35 +10,60 @@ class TicketType:
     POST_PARKING = "Forfait post stationnement"
 
 def validate_ticket_number(ticket_number, type_of_ticket):
+    """
+    Validates the ticket number.
+    :param ticket_number: The ticket number to validate.
+    :param type_of_ticket: The type of ticket.
+    :return: True if the ticket is valid, False otherwise.
+    """
     if type_of_ticket == TicketType.CLASSIC:
-        if len(ticket_number) != 10 or ticket_number[0] not in ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]:
+        # A classic ticket should have 10 digits
+        if len(ticket_number) != 10:
+            return False
+        # A classic ticket should have only digits
+        if not ticket_number.isdigit():
             return False
     elif type_of_ticket == TicketType.POST_PARKING:
+        # A post parking ticket should have 26 digits
         if len(ticket_number) != 26:
+            return False
+        # A post parking ticket should have only digits
+        if not ticket_number.isdigit():
             return False
     return True
 
 def calculate_payment_number_and_key(ticket_number, type_of_ticket):
+    """
+    Calculates the payment number and key for a given ticket number and type of ticket.
+
+    Parameters:
+    - ticket_number: A string representing the ticket number.
+    - type_of_ticket: An instance of the TicketType enum representing the type of ticket.
+
+    Returns:
+    - A tuple containing the payment number and key as strings.
+
+    Exceptions:
+    - If the ticket number is not valid for the given type of ticket, an error message is displayed using the st.error function and the function returns None for both the payment number and key.
+    - If the type of ticket is not recognized, an error message is displayed using the st.error function and the function returns None for both the payment number and key.
+    """
     if not validate_ticket_number(ticket_number, type_of_ticket):
-        st.error("Le numéro de contravention est invalide.")
+        st.error("Le numéro de contravention est invalide, vérifiez le type de contravention ?")
         return None, None
 
     if type_of_ticket == TicketType.CLASSIC:
         payment_number = "333" + ticket_number + "1"
-        key = str(int(payment_number) % 97)
-        if len(key) == 1:
-            key = '0' + key
-        return payment_number, key
-
     elif type_of_ticket == TicketType.POST_PARKING:
-        key = str(int(ticket_number) % 97)
-        if len(key) == 1:
-            key = '0' + key
-        return ticket_number, key
-
+        payment_number = ticket_number
     else:
         st.error("Type de contravention non reconnu.")
         return None, None
+
+    key = str(int(payment_number) % 97)
+    if len(key) == 1:
+        key = '0' + key
+
+    return payment_number, key
 
 st.title("Calculateur de numéro de télépaiement et clé de e-paiement pour les contraventions 🇫🇷")
 st.markdown("Vous avez perdu la deuxième partie de votre contravention OU vous ne possédez que le numéro de l'avis de contravention ET vous souhaitez payer en ligne ? <br> " \
@@ -64,15 +89,16 @@ ticket_number = st.text_input("Numéro de contravention", "", help="Le numéro d
 
 if st.button("Calculer le numéro de e-paiement la clé de télépaiement"):
     payment_number, key = calculate_payment_number_and_key(ticket_number, type_of_ticket)
-    if payment_number and key:
-        st.balloons()
-        st.success("Calcul réussi !")
-        st.markdown(f"### Numéro de télépaiement")
-        st.markdown(f"<h2 style='text-align: center;'>{payment_number}</h2>", unsafe_allow_html=True)
-        st.markdown(f"### Clé de e-paiement")
-        st.markdown(f"<h2 style='text-align: center;'>{key}</h2>", unsafe_allow_html=True)
-        st.markdown("<p style='text-align: center;'><a href='https://www.amendes.gouv.fr/tai' target='_blank'>Payer l'amende - https://www.amendes.gouv.fr/tai</a></p>", unsafe_allow_html=True)
-        st.markdown("<p style='text-align: center; color: gray; font-size: 12px;'>Attention : www.amendes.gouv.fr est le seul site gouvernemental pour payer votre amende en ligne. Faites attention aux arnaques.</p>", unsafe_allow_html=True)
+    if payment_number is not None or key is not None:
+        if payment_number and key:
+            st.balloons()
+            st.success("Calcul réussi !")
+            st.markdown(f"### Numéro de télépaiement")
+            st.markdown(f"<h2 style='text-align: center;'>{payment_number}</h2>", unsafe_allow_html=True)
+            st.markdown(f"### Clé de e-paiement")
+            st.markdown(f"<h2 style='text-align: center;'>{key}</h2>", unsafe_allow_html=True)
+            st.markdown("<p style='text-align: center;'><a href='https://www.amendes.gouv.fr/tai' target='_blank'>Payer l'amende - https://www.amendes.gouv.fr/tai</a></p>", unsafe_allow_html=True)
+            st.markdown("<p style='text-align: center; color: gray; font-size: 12px;'>Attention : www.amendes.gouv.fr est le seul site gouvernemental pour payer votre amende en ligne. Faites attention aux arnaques.</p>", unsafe_allow_html=True)
 
 st.markdown("<br> <br> <br> <br>", unsafe_allow_html=True)
 st.markdown("<hr>", unsafe_allow_html=True)        
